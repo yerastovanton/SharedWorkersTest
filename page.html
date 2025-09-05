@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="ru">
+<body>
+  <p id="status"></p>
+  <a href="page2.html">Перейти на другую страницу</a>
+
+  <script>
+    const worker = new SharedWorker("worker.js");
+    const status = document.getElementById("status");
+
+    worker.port.onmessage = (event) => {
+      status.textContent = "Counter: " + event.data.counter;
+      console.log("Message from worker:", event.data.counter);
+    };
+
+    worker.port.start();
+
+    // Запрашиваем значение сразу
+    worker.port.postMessage("getCounter");
+  </script>
+</body>
+</html>
