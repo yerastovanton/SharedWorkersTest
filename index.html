@@ -1,22 +1,24 @@
 <!DOCTYPE html>
 <html lang="ru">
 <body>
-  <p id="status"></p>
+  <p id="status">Загрузка...</p>
   <a href="page2.html">Перейти на другую страницу</a>
 
   <script>
-    const worker = new SharedWorker("worker.js");
     const status = document.getElementById("status");
 
-    worker.port.onmessage = (event) => {
-      status.textContent = "Counter: " + event.data.counter;
-      console.log("Message from worker:", event.data.counter);
-    };
+    try {
+      const worker = new SharedWorker("worker.js");
 
-    worker.port.start();
+      worker.port.onmessage = (event) => {
+        status.textContent = "Counter: " + event.data.counter;
+      };
 
-    // Запрашиваем значение сразу
-    worker.port.postMessage("getCounter");
+      worker.port.start();
+      worker.port.postMessage("getCounter");
+    } catch (e) {
+      status.textContent = "SharedWorker не поддерживается: " + e.message;
+    }
   </script>
 </body>
 </html>
